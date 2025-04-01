@@ -6,6 +6,7 @@ import avatarImg from "../assets/avatar.png"
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useAuth } from "../context/AuthContext";
+import { useGetWishlistQuery } from '../redux/features/wishlist/wishlistApi';
 
 const mainNavigation = [
     { name: "Home", href: "/" },
@@ -17,6 +18,7 @@ const mainNavigation = [
 const navigation = [
     {name: "Dashboard", href:"/user-dashboard"},
     {name: "Orders", href:"/orders"},
+    {name: "Wishlist", href:"/wishlist"},
     {name: "Cart Page", href:"/cart"},
     {name: "Check Out", href:"/checkout"},
 ]
@@ -27,6 +29,9 @@ const Navbar = () => {
     const cartItems = useSelector(state => state.cart.cartItems);
    
     const {currentUser, logout} = useAuth()
+    const { data: wishlistItems = [] } = useGetWishlistQuery(currentUser?.uid, {
+        skip: !currentUser,
+    });
     
     const handleLogOut = () => {
         logout()
@@ -95,10 +100,18 @@ const Navbar = () => {
                             }
                         </div>
                         
-                        <button className="hidden sm:flex items-center gap-2 hover:text-accent transition-colors">
+                        <Link 
+                            to="/wishlist" 
+                            className="hidden sm:flex items-center gap-2 hover:text-accent transition-colors relative group"
+                        >
                             <HiOutlineHeart className="w-6 h-6" />
-                            <span className="text-sm font-medium">Wishlist</span>
-                        </button>
+                            {/* <span className="text-sm font-medium">Wishlist</span> */}
+                            {wishlistItems.length > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    {wishlistItems.length}
+                                </span>
+                            )}
+                        </Link>
 
                         <Link to="/cart" 
                             className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-primary-dark rounded-xl text-white font-medium hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"

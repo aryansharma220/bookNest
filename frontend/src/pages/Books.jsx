@@ -2,6 +2,8 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { HiOutlineSearch, HiViewGrid, HiViewList } from 'react-icons/hi'
 import { FaSort, FaHeart } from 'react-icons/fa'
 import { useFetchAllBooksQuery } from '../redux/features/books/booksApi'
+import { useAuth } from '../context/AuthContext';
+import { useGetWishlistQuery, useAddToWishlistMutation, useRemoveFromWishlistMutation } from '../redux/features/wishlist/wishlistApi';
 import BookCard from './books/BookCard'
 import Loading from '../components/Loading'
 import useDebounce from '../hooks/useDebounce'
@@ -12,12 +14,15 @@ const Books = () => {
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
   const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 })
   const [sortBy, setSortBy] = useState('newest') // 'newest', 'priceHigh', 'priceLow'
-  const [wishlist, setWishlist] = useState([])
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
   const { data: books = [], isLoading } = useFetchAllBooksQuery()
+  const { currentUser } = useAuth();
+  const { data: wishlistItems = [] } = useGetWishlistQuery(currentUser?.uid);
+  const [addToWishlist] = useAddToWishlistMutation();
+  const [removeFromWishlist] = useRemoveFromWishlistMutation();
 
   const clearFilters = () => {
     setSearchTerm('')
@@ -69,13 +74,26 @@ const Books = () => {
     }
   }, [searchResults, sortBy])
 
-  const toggleWishlist = (bookId) => {
-    setWishlist(prev => 
-      prev.includes(bookId) 
-        ? prev.filter(id => id !== bookId)
-        : [...prev, bookId]
-    )
-  }
+  const isInWishlist = (bookId) => {
+    return wishlistItems.some(item => item.bookId._id === bookId);
+  };
+
+  const toggleWishlist = async (bookId) => {
+    if (!currentUser) {
+      // Handle not logged in case
+      return;
+    }
+
+    try {
+      if (isInWishlist(bookId)) {
+        await removeFromWishlist({ userId: currentUser.uid, bookId }).unwrap();
+      } else {
+        await addToWishlist({ userId: currentUser.uid, bookId }).unwrap();
+      }
+    } catch (error) {
+      console.error('Failed to update wishlist:', error);
+    }
+  };
 
   if (isLoading) return <Loading />
 
@@ -218,7 +236,7 @@ const Books = () => {
                           className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300"
                         >
                           <FaHeart className={`${
-                            wishlist.includes(book._id) ? 'text-red-500' : 'text-gray-300'
+                            isInWishlist(book._id) ? 'text-red-500' : 'text-gray-300'
                           }`} />
                         </button>
                       </div>
@@ -239,7 +257,7 @@ const Books = () => {
                               className="p-2 hover:text-red-500 transition-colors duration-300"
                             >
                               <FaHeart className={`${
-                                wishlist.includes(book._id) ? 'text-red-500' : 'text-gray-300'
+                                isInWishlist(book._id) ? 'text-red-500' : 'text-gray-300'
                               }`} />
                             </button>
                           </div>

@@ -19,6 +19,7 @@ import UserDashboard from "../pages/dashboard/users/UserDashboard";
 import Books from "../pages/Books";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
+import Wishlist from "../pages/Wishlist";
 
 const router = createBrowserRouter([
     {
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
         {
           path: "/contact",
           element: <Contact/>
+        },
+        {
+          path: "/wishlist",
+          element: <PrivateRoute><Wishlist/></PrivateRoute>
         }
       ]
     },

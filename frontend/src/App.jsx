@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import { AuthProvide } from './context/AuthContext'
 import { useEffect, useState } from 'react'
 import Loading from './components/Loading'
+import { Toaster } from 'react-hot-toast'
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
         </main>
         <Footer />
       </AuthProvide>
+      <Toaster position="top-right" />
     </div>
   )
 }
