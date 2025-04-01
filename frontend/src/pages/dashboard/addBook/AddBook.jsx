@@ -11,30 +11,40 @@ const AddBook = () => {
     const [addBook, {isLoading, isError}] = useAddBookMutation()
     const [imageFileName, setimageFileName] = useState('')
     const onSubmit = async (data) => {
- 
         const newBookData = {
-            ...data,
-            coverImage: imageFileName
-        }
+            title: data.title,
+            description: data.description,
+            category: data.category.toLowerCase(),
+            trending: data.trending || false,
+            coverImage: imageFileName,
+            oldPrice: parseFloat(data.oldPrice),
+            newPrice: parseFloat(data.newPrice)
+        };
+
         try {
-            await addBook(newBookData).unwrap();
-            Swal.fire({
-                title: "Book added",
-                text: "Your book is uploaded successfully!",
-                icon: "success",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, It's Okay!"
-              });
-              reset();
-              setimageFileName('')
-              setimageFile(null);
+            const response = await addBook(newBookData).unwrap();
+            if (response) {
+                Swal.fire({
+                    title: "Book added",
+                    text: "Your book is uploaded successfully!",
+                    icon: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, It's Okay!"
+                });
+                reset();
+                setimageFileName('');
+                setimageFile(null);
+            }
         } catch (error) {
-            console.error(error);
-            alert("Failed to add book. Please try again.")   
+            console.error('Error details:', error);
+            Swal.fire({
+                title: "Error",
+                text: error.data?.message || "Failed to add book. Please try again.",
+                icon: "error"
+            });
         }
-      
     }
 
     const handleFileChange = (e) => {

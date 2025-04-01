@@ -194,9 +194,6 @@ const Dashboard = () => {
                 </div>
               </div>
             </section>
-            <section className="text-right font-semibold text-gray-500">
-              <a href="#" className="text-purple-600 hover:underline">Recreated on Codepen</a> with <a href="https://tailwindcss.com/" className="text-teal-400 hover:underline">Tailwind CSS</a> by Azri Kahar, <a href="https://dribbble.com/shots/10711741-Free-UI-Kit-for-Figma-Online-Courses-Dashboard" className="text-purple-600 hover:underline">original design</a> made by Chili Labs
-            </section>
     </>
   )
 }

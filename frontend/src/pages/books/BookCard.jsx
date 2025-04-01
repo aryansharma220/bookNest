@@ -1,50 +1,62 @@
 import React from 'react'
 import { FiShoppingCart } from 'react-icons/fi'
 import { getImgUrl } from '../../utils/getImgUrl'
-
 import { Link } from'react-router-dom'
-
 import { useDispatch } from'react-redux'
 import { addToCart } from '../../redux/features/cart/cartSlice'
 
 const BookCard = ({book}) => {
-    const dispatch =  useDispatch();
+    const dispatch = useDispatch();
 
     const handleAddToCart = (product) => {
         dispatch(addToCart(product))
     }
+    
     return (
-        <div className=" rounded-lg transition-shadow duration-300">
-            <div
-                className="flex flex-col sm:flex-row sm:items-center sm:h-72  sm:justify-center gap-4"
-            >
-                <div className="sm:h-72 sm:flex-shrink-0 border rounded-md">
+        <div className="bg-white rounded-xl shadow-card hover:shadow-xl transition-all duration-300 p-4">
+            <div className="flex flex-col h-full">
+                <div className="relative group">
                     <Link to={`/books/${book._id}`}>
                         <img
                             src={`${getImgUrl(book?.coverImage)}`}
                             alt=""
-                            className="w-full bg-cover p-2 rounded-md cursor-pointer hover:scale-105 transition-all duration-200"
+                            className="w-full h-[300px] object-cover rounded-lg transform transition-transform duration-300 group-hover:scale-105"
                         />
                     </Link>
+                    {book.trending && (
+                        <span className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                            Trending
+                        </span>
+                    )}
                 </div>
 
-                <div>
+                <div className="mt-4 flex-grow">
                     <Link to={`/books/${book._id}`}>
-                        <h3 className="text-xl font-semibold hover:text-blue-600 mb-3">
-                       {book?.title}
+                        <h3 className="text-xl font-bold text-secondary hover:text-primary-dark transition-colors duration-200 mb-2">
+                            {book?.title}
                         </h3>
                     </Link>
-                    <p className="text-gray-600 mb-5">{book?.description.length > 80 ? `${book.description.slice(0, 80)}...` : book?.description}</p>
-                    <p className="font-medium mb-5">
-                        ${book?.newPrice} <span className="line-through font-normal ml-2">$ {book?.oldPrice}</span>
+                    <p className="text-gray-600 mb-4 line-clamp-2">
+                        {book?.description}
                     </p>
-                    <button 
-                    onClick={() => handleAddToCart(book)}
-                    className="btn-primary px-6 space-x-1 flex items-center gap-1 ">
-                        <FiShoppingCart className="" />
-                        <span>Add to Cart</span>
-                    </button>
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <span className="text-2xl font-bold text-secondary">${book?.newPrice}</span>
+                            <span className="ml-2 text-sm text-gray-500 line-through">${book?.oldPrice}</span>
+                        </div>
+                        <span className="text-sm font-medium px-2 py-1 bg-green-100 text-green-800 rounded-full capitalize">
+                            {book?.category}
+                        </span>
+                    </div>
                 </div>
+
+                <button 
+                    onClick={() => handleAddToCart(book)}
+                    className="w-full bg-primary hover:bg-primary-dark text-secondary font-bold py-3 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2"
+                >
+                    <FiShoppingCart className="text-xl" />
+                    <span>Add to Cart</span>
+                </button>
             </div>
         </div>
     )

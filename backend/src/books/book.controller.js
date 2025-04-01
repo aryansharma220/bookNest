@@ -2,21 +2,35 @@ const Book = require("./book.model");
 
 const postABook = async (req, res) => {
     try {
-        console.log('Received book data:', req.body); // Add logging
+        console.log('Received book data:', req.body);
         
-        // Validate required fields
         const { title, description, category, coverImage, oldPrice, newPrice } = req.body;
-        if (!title || !description || !category || !coverImage || !oldPrice || !newPrice) {
+
+        // Validate all required fields
+        const requiredFields = { title, description, category, coverImage, oldPrice, newPrice };
+        const missingFields = Object.entries(requiredFields)
+            .filter(([_, value]) => !value)
+            .map(([key]) => key);
+
+        if (missingFields.length > 0) {
             return res.status(400).json({ 
-                message: "Missing required fields",
+                message: `Missing required fields: ${missingFields.join(', ')}`,
                 received: req.body 
             });
         }
 
+        // Validate prices are numbers and positive
+        if (isNaN(oldPrice) || isNaN(newPrice) || oldPrice < 0 || newPrice < 0) {
+            return res.status(400).json({
+                message: "Prices must be valid positive numbers",
+                received: { oldPrice, newPrice }
+            });
+        }
+
         const newBook = new Book({
-            title,
-            description,
-            category,
+            title: title.trim(),
+            description: description.trim(),
+            category: category.toLowerCase().trim(),
             trending: req.body.trending || false,
             coverImage,
             oldPrice: Number(oldPrice),
@@ -33,6 +47,12 @@ const postABook = async (req, res) => {
 
     } catch (error) {
         console.error("Error creating book:", error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                message: "Validation Error",
+                error: error.message
+            });
+        }
         return res.status(500).json({
             message: "Failed to create book",
             error: error.message
