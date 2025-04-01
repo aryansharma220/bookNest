@@ -1,4 +1,3 @@
-
 import { Outlet } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/Navbar'
@@ -25,9 +24,8 @@ function App() {
     return <Loading />; 
   }
 
-
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-white via-blackBG to-white">
       <AuthProvide>
         <Navbar />
         <main className='min-h-screen max-w-screen-2xl mx-auto px-4 py-6 font-primary'>
@@ -35,8 +33,7 @@ function App() {
         </main>
         <Footer />
       </AuthProvide>
-
-    </>
+    </div>
   )
 }
 

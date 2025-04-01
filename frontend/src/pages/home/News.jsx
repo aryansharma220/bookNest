@@ -47,55 +47,70 @@ const news = [
 ]
 
 const News = () => {
-  return (
-    <div className='py-16'>
-        <h2 className='text-3xl font-semibold mb-6'>News </h2>
+    return (
+        <div className='py-16 bg-gradient-to-b from-white to-blackBG'>
+            <h2 className='text-4xl font-bold bg-gradient-to-r from-secondary to-primary-dark bg-clip-text text-transparent mb-8'>
+                Latest News
+            </h2>
 
-        <Swiper
-        slidesPerView={1}
-        spaceBetween={30}
-        navigation={true}
-        breakpoints={{
-          640: {
-            slidesPerView: 1,
-            spaceBetween: 20,
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: 40,
-          },
-          1024: {
-            slidesPerView: 2,
-            spaceBetween: 50,
-          },
-        }}
-        modules={[Pagination, Navigation]}
-        className="mySwiper"
-      >
-        
-        {
-            news.map((item, index) => (
-                <SwiperSlide key={index}>
-                    <div className='flex flex-col sm:flex-row sm:justify-between items-center gap-12'>
-                        {/* content */}
-                        <div className='py-4'>
-                            <Link to="/">
-                                 <h3 className='text-lg font-medium hover:text-blue-500 mb-4'>{item.title}</h3>
-                            </Link>
-                            <div className='w-12 h-[4px] bg-primary mb-5'></div>
-                            <p className='text-sm text-gray-600'>{item.description}</p>
+            <Swiper
+                slidesPerView={1}
+                spaceBetween={30}
+                navigation={true}
+                breakpoints={{
+                    640: {
+                        slidesPerView: 1,
+                        spaceBetween: 20,
+                    },
+                    768: {
+                        slidesPerView: 2,
+                        spaceBetween: 40,
+                    },
+                    1024: {
+                        slidesPerView: 2,
+                        spaceBetween: 50,
+                    },
+                }}
+                modules={[Pagination, Navigation]}
+                className="p-4"
+            >
+                {news.map((item, index) => (
+                    <SwiperSlide key={index}>
+                        <div className='bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
+                            <div className='flex flex-col sm:flex-row'>
+                                <div className='sm:w-1/2 p-6 flex flex-col justify-between'>
+                                    <div>
+                                        <Link to="/">
+                                            <h3 className='text-xl font-bold text-secondary hover:text-primary-dark transition-colors duration-200 mb-4'>
+                                                {item.title}
+                                            </h3>
+                                        </Link>
+                                        <div className='w-20 h-1 bg-gradient-to-r from-primary to-primary-dark rounded-full mb-4'></div>
+                                        <p className='text-gray-600 leading-relaxed'>
+                                            {item.description}
+                                        </p>
+                                    </div>
+                                    <button className='mt-6 inline-flex items-center text-secondary hover:text-primary-dark font-semibold'>
+                                        Read More 
+                                        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div className='sm:w-1/2'>
+                                    <img 
+                                        src={item.image} 
+                                        alt="" 
+                                        className='w-full h-full object-cover hover:scale-105 transition-transform duration-300'
+                                    />
+                                </div>
+                            </div>
                         </div>
-
-                        <div className='flex-shrink-0'>
-                            <img src={item.image} alt=""  className='w-full object-cover'/>
-                        </div>
-                    </div>
-                </SwiperSlide>
-            ) )
-        }
-      </Swiper>
-    </div>
-  )
+                    </SwiperSlide>
+                ))}
+            </Swiper>
+        </div>
+    )
 }
 
 export default News

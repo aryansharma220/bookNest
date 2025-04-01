@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Nunito+Sans:wght@300;400;600;700&display=swap');
 
 .swiper {
     width: 100%;
@@ -20,21 +20,72 @@
     object-fit: cover;
   }
 
- .swiper-button-prev {
-    display: none !important;
- }
- .swiper-button-next{
-    @apply bg-white p-5 rounded-full z-50 shadow-md
- }
+.swiper-button-next,
+.swiper-button-prev {
+    @apply bg-white rounded-full w-12 h-12 shadow-lg flex items-center justify-center text-secondary hover:bg-primary hover:text-white transition-all duration-300 !important;
+}
 
- .swiper-button-prev:after, .swiper-button-next:after{
-    font-size: 16px !important;
- }
+.swiper-button-next:after,
+.swiper-button-prev:after {
+    @apply text-lg !important;
+}
 
- .btn-primary {
-    @apply bg-primary  px-12 py-2 rounded-md text-base font-secondary font-bold hover:bg-secondary hover:text-white transition-all duration-200 cursor-pointer
- }
+.btn-primary {
+    @apply bg-gradient-to-r from-primary to-primary-dark px-8 py-3 rounded-xl text-white font-semibold 
+    hover:shadow-neon hover:-translate-y-0.5 active:translate-y-0 
+    transition-all duration-300 focus:ring-4 focus:ring-primary/20;
+}
 
-.html{
-   scroll-behavior: smooth;
+.glass-effect {
+    @apply backdrop-blur-glass bg-white/80 shadow-glass;
+}
+
+.glass-morphism {
+    @apply backdrop-blur-xl bg-white/30 border border-white/20 shadow-glass;
+}
+
+.gradient-text {
+    @apply bg-gradient-to-r from-secondary to-primary-dark bg-clip-text text-transparent;
+}
+
+/* Add smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 5px theme('colors.primary'), 0 0 20px theme('colors.primary'); }
+    50% { box-shadow: 0 0 10px theme('colors.primary'), 0 0 30px theme('colors.primary'); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gradient-to-b from-primary to-accent rounded-full hover:from-accent hover:to-primary transition-colors duration-300;
+}
+
+/* Add nice selection color */
+::selection {
+    @apply bg-primary/20 text-secondary;
 }
