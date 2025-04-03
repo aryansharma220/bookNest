@@ -1,147 +1,196 @@
 import React, { useState } from 'react'
-import InputField from './InputField'
-import SelectField from './SelectField'
 import { useForm } from 'react-hook-form';
-import { useAddBookMutation } from '../../../redux/features/books/booksApi';
-import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import getBaseUrl from '../../../utils/baseURL';
 
 const AddBook = () => {
+    const [loading, setLoading] = useState(false);
+    const [imagePreview, setImagePreview] = useState(null);
+    const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    const [imageFile, setimageFile] = useState(null);
-    const [addBook, {isLoading, isError}] = useAddBookMutation()
-    const [imageFileName, setimageFileName] = useState('')
-    const onSubmit = async (data) => {
-        const newBookData = {
-            title: data.title,
-            description: data.description,
-            category: data.category.toLowerCase(),
-            trending: data.trending || false,
-            coverImage: imageFileName,
-            oldPrice: parseFloat(data.oldPrice),
-            newPrice: parseFloat(data.newPrice)
-        };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const onSubmit = async (data) => {
+        setLoading(true);
         try {
-            const response = await addBook(newBookData).unwrap();
-            if (response) {
-                Swal.fire({
-                    title: "Book added",
-                    text: "Your book is uploaded successfully!",
-                    icon: "success",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, It's Okay!"
-                });
+            const formData = new FormData();
+            Object.keys(data).forEach(key => {
+                if (key === 'image') {
+                    formData.append(key, data[key][0]);
+                } else {
+                    formData.append(key, data[key]);
+                }
+            });
+
+            const response = await axios.post(`${getBaseUrl()}/api/books/create-book`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                }
+            });
+
+            if (response.status === 201) {
+                alert('Book added successfully!');
                 reset();
-                setimageFileName('');
-                setimageFile(null);
+                setImagePreview(null);
+                navigate('/dashboard/manage-books');
             }
         } catch (error) {
-            console.error('Error details:', error);
-            Swal.fire({
-                title: "Error",
-                text: error.data?.message || "Failed to add book. Please try again.",
-                icon: "error"
-            });
+            console.error('Error adding book:', error);
+            alert(error.response?.data?.message || 'Error adding book');
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if(file) {
-            setimageFile(file);
-            setimageFileName(file.name);
-        }
-    }
-  return (
-    <div className="max-w-lg   mx-auto md:p-6 p-3 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Add New Book</h2>
+    return (
+        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Add New Book</h2>
+            
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input 
+                            type="text"
+                            {...register("title", { required: "Title is required" })}
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Book title"
+                        />
+                        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+                    </div>
 
-      {/* Form starts here */}
-      <form onSubmit={handleSubmit(onSubmit)} className=''>
-        {/* Reusable Input Field for Title */}
-        <InputField
-          label="Title"
-          name="title"
-          placeholder="Enter book title"
-          register={register}
-        />
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Author</label>
+                        <input 
+                            type="text"
+                            {...register("author", { required: "Author is required" })}
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Author name"
+                        />
+                        {errors.author && <p className="text-red-500 text-sm mt-1">{errors.author.message}</p>}
+                    </div>
 
-        {/* Reusable Textarea for Description */}
-        <InputField
-          label="Description"
-          name="description"
-          placeholder="Enter book description"
-          type="textarea"
-          register={register}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
+                        <input 
+                            type="number"
+                            step="0.01"
+                            {...register("price", { 
+                                required: "Price is required",
+                                min: { value: 0, message: "Price must be positive" }
+                            })}
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="29.99"
+                        />
+                        {errors.price && <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>}
+                    </div>
 
-        />
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Discount (%)</label>
+                        <input 
+                            type="number"
+                            step="1"
+                            {...register("discount", { 
+                                min: { value: 0, message: "Discount cannot be negative" },
+                                max: { value: 100, message: "Discount cannot exceed 100%" }
+                            })}
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="10"
+                        />
+                        {errors.discount && <p className="text-red-500 text-sm mt-1">{errors.discount.message}</p>}
+                    </div>
 
-        {/* Reusable Select Field for Category */}
-        <SelectField
-          label="Category"
-          name="category"
-          options={[
-            { value: '', label: 'Choose A Category' },
-            { value: 'business', label: 'Business' },
-            { value: 'technology', label: 'Technology' },
-            { value: 'fiction', label: 'Fiction' },
-            { value: 'horror', label: 'Horror' },
-            { value: 'adventure', label: 'Adventure' },
-            // Add more options as needed
-          ]}
-          register={register}
-        />
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                        <select 
+                            {...register("category", { required: "Category is required" })}
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">Select category</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Non-Fiction">Non-Fiction</option>
+                            <option value="Science">Science</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Business">Business</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Mystery">Mystery</option>
+                        </select>
+                        {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>}
+                    </div>
+                </div>
 
-        {/* Trending Checkbox */}
-        <div className="mb-4">
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              {...register('trending')}
-              className="rounded text-blue-600 focus:ring focus:ring-offset-2 focus:ring-blue-500"
-            />
-            <span className="ml-2 text-sm font-semibold text-gray-700">Trending</span>
-          </label>
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea 
+                            {...register("description", { required: "Description is required" })}
+                            rows="4"
+                            className="w-full px-3 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Book description..."
+                        />
+                        {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Book Cover Image</label>
+                        <div className="flex items-center space-x-4">
+                            <input 
+                                type="file"
+                                accept="image/*"
+                                {...register("image", { required: "Image is required" })}
+                                onChange={handleImageChange}
+                                className="hidden"
+                                id="image-input"
+                            />
+                            <label 
+                                htmlFor="image-input"
+                                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg cursor-pointer hover:bg-gray-200"
+                            >
+                                Choose Image
+                            </label>
+                            {imagePreview && (
+                                <div className="relative">
+                                    <img src={imagePreview} alt="Preview" className="h-20 w-20 object-cover rounded" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setImagePreview(null)}
+                                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>}
+                    </div>
+
+                    <div className="flex items-center space-x-4">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={`px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {loading ? 'Adding Book...' : 'Add Book'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/dashboard/manage-books')}
+                            className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
+    );
+};
 
-        {/* Old Price */}
-        <InputField
-          label="Old Price"
-          name="oldPrice"
-          type="number"
-          placeholder="Old Price"
-          register={register}
-         
-        />
-
-        {/* New Price */}
-        <InputField
-          label="New Price"
-          name="newPrice"
-          type="number"
-          placeholder="New Price"
-          register={register}
-          
-        />
-
-        {/* Cover Image Upload */}
-        <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Cover Image</label>
-          <input type="file" accept="image/*" onChange={handleFileChange} className="mb-2 w-full" />
-          {imageFileName && <p className="text-sm text-gray-500">Selected: {imageFileName}</p>}
-        </div>
-
-        {/* Submit Button */}
-        <button type="submit" className="w-full py-2 bg-green-500 text-white font-bold rounded-md">
-         {
-            isLoading ? <span className="">Adding.. </span> : <span>Add Book</span>
-          }
-        </button>
-      </form>
-    </div>
-  )
-}
-
-export default AddBook
+export default AddBook;

@@ -34,10 +34,26 @@ const bookSchema = new mongoose.Schema({
         type: Number,
         required: [true, 'New price is required'],
         min: 0
+    },
+    discount: {
+        type: Number,
+        min: 0,
+        max: 100,
+        default: 0
     }
 }, {
     timestamps: true
 });
+
+// Add a virtual field for discounted price
+bookSchema.virtual('discountedPrice').get(function() {
+    if (!this.discount) return this.newPrice;
+    const discountAmount = (this.newPrice * this.discount) / 100;
+    return Number((this.newPrice - discountAmount).toFixed(2));
+});
+
+// Ensure virtuals are included in JSON output
+bookSchema.set('toJSON', { virtuals: true });
 
 const Book = mongoose.model('Book', bookSchema);
 
