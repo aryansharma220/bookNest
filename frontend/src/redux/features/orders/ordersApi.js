@@ -23,10 +23,17 @@ const ordersApi = createApi({
                 url: `/email/${email}`
             }),
             providesTags: ['Orders']
-        })
+        }),
+        cancelOrder: builder.mutation({
+            query: (orderId) => ({
+                url: `/orders/${orderId}/cancel`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: ['Orders'],
+        }),
     })
 })
 
-export const {useCreateOrderMutation, useGetOrderByEmailQuery} = ordersApi;
+export const {useCreateOrderMutation, useGetOrderByEmailQuery, useCancelOrderMutation} = ordersApi;
 
 export default ordersApi;
