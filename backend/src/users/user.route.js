@@ -40,4 +40,37 @@ router.post("/admin", async (req, res) => {
     }
 });
 
+router.post("/seller", async (req, res) => {
+    const {username, password} = req.body;
+    try {
+        const seller = await User.findOne({username, role: 'seller'});
+        if(!seller) {
+            return res.status(404).json({message: "Seller not found!"});
+        }
+        
+        if(seller.password !== password) {
+            return res.status(401).json({message: "Invalid password!"});
+        }
+        
+        const token = jwt.sign(
+            {id: seller._id, username: seller.username, role: seller.role}, 
+            JWT_SECRET,
+            {expiresIn: "1h"}
+        );
+
+        return res.status(200).json({
+            message: "Authentication successful",
+            token: token,
+            user: {
+                username: seller.username,
+                role: seller.role
+            }
+        });
+        
+    } catch (error) {
+       console.error("Failed to login as seller", error);
+       res.status(500).json({message: "Failed to login as seller"}); 
+    }
+});
+
 module.exports = router;

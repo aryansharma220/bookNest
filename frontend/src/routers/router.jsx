@@ -10,6 +10,7 @@ import PrivateRoute from "./PrivateRoute";
 import OrderPage from "../pages/books/OrderPage";
 import AdminRoute from "./AdminRoute";
 import AdminLogin from "../components/AdminLogin";
+import SellerLogin from "../components/SellerLogin";
 import DashboardLayout from "../pages/dashboard/DashboardLayout";
 import Dashboard from "../pages/dashboard/Dashboard";
 import ManageBooks from "../pages/dashboard/manageBooks/ManageBooks";
@@ -20,6 +21,12 @@ import Books from "../pages/Books";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import Wishlist from "../pages/Wishlist";
+import SellerRoute from "./SellerRoute";
+import SellerDashboardLayout from "../pages/sellerDashboard/SellerDashboardLayout";
+import SellerBooks from "../pages/sellerDashboard/SellerBooks";
+import SellerAddBook from "../pages/sellerDashboard/SellerAddBook";
+import SellerEditBook from "../pages/sellerDashboard/SellerEditBook";
+import SellerDashboard from "../pages/sellerDashboard/SellerDashboard";
 
 const router = createBrowserRouter([
     {
@@ -81,6 +88,10 @@ const router = createBrowserRouter([
       element: <AdminLogin/>
     },
     {
+      path: "/seller",
+      element: <SellerLogin/>
+    },
+    {
       path: "/dashboard",
       element: <AdminRoute>
         <DashboardLayout/>
@@ -107,6 +118,28 @@ const router = createBrowserRouter([
           element: <AdminRoute>
             <ManageBooks/>
           </AdminRoute>
+        }
+      ]
+    },
+    {
+      path: "/seller-dashboard",
+      element: <SellerRoute><SellerDashboardLayout/></SellerRoute>,
+      children: [
+        {
+          path: "",
+          element: <SellerRoute><SellerDashboard/></SellerRoute>
+        },
+        {
+          path: "my-books",
+          element: <SellerRoute><SellerBooks/></SellerRoute>
+        },
+        {
+          path: "add-book",
+          element: <SellerRoute><SellerAddBook/></SellerRoute>
+        },
+        {
+          path: "edit-book/:id",
+          element: <SellerRoute><SellerEditBook/></SellerRoute>
         }
       ]
     }

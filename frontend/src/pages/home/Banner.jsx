@@ -30,7 +30,7 @@ const Banner = () => {
 
         <div className='md:w-1/2 animate-float filter drop-shadow-2xl'>
           <img 
-            src={bannerImg} 
+            // src={bannerImg} 
             alt="Featured Books" 
             className="w-full max-w-lg mx-auto rounded-2xl transform -rotate-6 transition-transform duration-700 hover:rotate-0 hover:scale-105"
           />

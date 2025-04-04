@@ -99,7 +99,7 @@ const News = () => {
                                 </div>
                                 <div className='sm:w-1/2'>
                                     <img 
-                                        src={item.image} 
+                                        // src={item.image} 
                                         alt="" 
                                         className='w-full h-full object-cover hover:scale-105 transition-transform duration-300'
                                     />

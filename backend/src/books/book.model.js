@@ -40,6 +40,23 @@ const bookSchema = new mongoose.Schema({
         min: 0,
         max: 100,
         default: 0
+    },
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    soldCount: {
+        type: Number,
+        default: 0
+    },
+    rating: {
+        average: { type: Number, default: 0 },
+        count: { type: Number, default: 0 }
+    },
+    revenue: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

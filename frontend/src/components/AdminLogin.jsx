@@ -40,40 +40,45 @@ const AdminLogin = () => {
             setMessage(error.response?.data?.message || "Connection error. Please try again.") 
         }
       }
-  return (
-    <div className='h-screen flex justify-center items-center '>
-        <div className='w-full max-w-sm mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4'>
-            <h2 className='text-xl font-semibold mb-4'>Admin Dashboard Login </h2>
 
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <div className='mb-4'>
-                    <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor="username">Username</label>
-                    <input 
-                    {...register("username", { required: true })} 
-                    type="text" name="username" id="username" placeholder='username'
-                    className='shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow'
-                    />
+    return (
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center bg-gradient-to-br from-purple-50 to-gray-100">
+            <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
+                <div className="text-center">
+                    <h2 className="mt-6 text-3xl font-bold text-gray-900">Admin Portal</h2>
+                    <p className="mt-2 text-sm text-gray-600">Enter your credentials to access the dashboard</p>
                 </div>
-                <div className='mb-4'>
-                    <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor="password">Password</label>
-                    <input 
-                    {...register("password", { required: true })} 
-                    type="password" name="password" id="password" placeholder='Password'
-                    className='shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow'
-                    />
-                </div>
-                {
-                    message && <p className='text-red-500 text-xs italic mb-3'>{message}</p>
-                }
-                <div className='w-full'>
-                    <button className='bg-blue-500 w-full hover:bg-blue-700 text-white font-bold py-2 px-8 rounded focus:outline-none'>Login </button>
-                </div>
-            </form>
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+                    <div className="rounded-md shadow-sm -space-y-px">
+                        <div className="mb-4">
+                            <input 
+                                {...register("username", { required: true })}
+                                type="text"
+                                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                                placeholder="Username"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <input 
+                                {...register("password", { required: true })}
+                                type="password"
+                                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                                placeholder="Password"
+                            />
+                        </div>
+                    </div>
 
-            <p className='mt-5 text-center text-gray-500 text-xs'>©2025 Book Store. All rights reserved.</p>
+                    {message && <p className="text-red-500 text-sm text-center">{message}</p>}
+
+                    <div>
+                        <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            Access Dashboard
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default AdminLogin
