@@ -6,6 +6,11 @@ const bookSchema = new mongoose.Schema({
         required: [true, 'Title is required'],
         trim: true
     },
+    author: {
+        type: String,
+        required: [true, 'Author is required'],
+        trim: true
+    },
     description: {
         type: String,
         required: [true, 'Description is required'],
@@ -17,13 +22,24 @@ const bookSchema = new mongoose.Schema({
         trim: true,
         lowercase: true
     },
-    trending: {
-        type: Boolean,
-        default: false
+    price: {
+        type: Number,
+        required: [true, 'Price is required'],
+        min: 0
+    },
+    imageURL: {
+        type: String,
+        required: [true, 'Image URL is required']
     },
     coverImage: {
         type: String,
-        required: [true, 'Cover image is required']
+        default: function() {
+            return this.imageURL;
+        }
+    },
+    trending: {
+        type: Boolean,
+        default: false
     },
     oldPrice: {
         type: Number,
