@@ -8,7 +8,8 @@ const SellerDashboardLayout = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('sellerToken');
-        navigate('/');
+        // Force navigation to home page and reset history
+        window.location.href = '/';
     }
 
     const isActive = (path) => location.pathname === path;

@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form"
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import getBaseUrl from '../utils/baseURL';
 
 const Register = () => {
+    const { role = 'user' } = useParams();
     const [message, setMessage] = useState("");
     const {registerUser, signInWithGoogle} = useAuth();
     const {
@@ -16,10 +19,18 @@ const Register = () => {
 
     const onSubmit = async(data) => {
         try {
-            await registerUser(data.email, data.password);
-            alert("User registered successfully!")
+            if (role === 'user') {
+                await registerUser(data.email, data.password);
+            } else {
+                await axios.post(`${getBaseUrl()}/api/auth/register/${role}`, {
+                    username: data.email,
+                    password: data.password
+                });
+            }
+            alert(`${role.charAt(0).toUpperCase() + role.slice(1)} registered successfully!`);
+            navigate("/login");
         } catch (error) {
-           setMessage("Please provide a valid email and password") 
+           setMessage(error.response?.data?.message || "Registration failed") 
            console.error(error)
         }
     }
@@ -39,8 +50,10 @@ const Register = () => {
         <div className="min-h-screen bg-gray-100 flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100">
             <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
                 <div className="text-center">
-                    <h2 className="mt-6 text-3xl font-bold text-gray-900">Create Account</h2>
-                    <p className="mt-2 text-sm text-gray-600">Start your journey with us</p>
+                    <h2 className="mt-6 text-3xl font-bold text-gray-900">
+                        Create {role.charAt(0).toUpperCase() + role.slice(1)} Account
+                    </h2>
+                    <p className="mt-2 text-sm text-gray-600">Join us as a {role}</p>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="rounded-md shadow-sm -space-y-px">
