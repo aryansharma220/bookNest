@@ -3,16 +3,10 @@ const Book = require('./book.model');
 const { postABook, getAllBooks, getSingleBook, UpdateBook, deleteABook } = require('./book.controller');
 const verifyAdminToken = require('../middleware/verifyAdminToken');
 const verifySellerToken = require('../middleware/verifySellerToken');
-const Order = require('../orders/order.model'); // Updated import for Order model
+const Order = require('../orders/order.model');
 const router = express.Router();
 
-// frontend => backend server => controller => book schema  => database => send to server => back to the frontend
-//post = when submit something fronted to db
-// get =  when get something back from db
-// put/patch = when edit or update something
-// delete = when delete something
 
-// Update the seller stats endpoint
 router.get("/seller/stats", verifySellerToken, async (req, res) => {
     try {
         const totalBooks = await Book.countDocuments({ seller: req.user.id });
@@ -55,7 +49,6 @@ router.get("/seller/stats", verifySellerToken, async (req, res) => {
     }
 });
 
-// Get seller's books
 router.get("/seller", verifySellerToken, async (req, res) => {
     try {
         const books = await Book.find({ seller: req.user.id });
@@ -65,12 +58,9 @@ router.get("/seller", verifySellerToken, async (req, res) => {
     }
 });
 
-// Create book with seller info
 router.post("/seller/create", verifySellerToken, async (req, res) => {
     try {
         const { title, author, description, category, price, imageURL } = req.body;
-
-        // Validate required fields
         if (!title || !author || !description || !category || !price || !imageURL) {
             return res.status(400).json({ 
                 message: "All fields are required: title, author, description, category, price, imageURL" 
@@ -85,7 +75,6 @@ router.post("/seller/create", verifySellerToken, async (req, res) => {
             price,
             imageURL,
             seller: req.user.id,
-            // Set default values for other fields
             oldPrice: price,
             newPrice: price,
             discount: 0,
@@ -106,7 +95,6 @@ router.post("/seller/create", verifySellerToken, async (req, res) => {
     }
 });
 
-// Update seller's book
 router.put("/seller/:id", verifySellerToken, async (req, res) => {
     try {
         const book = await Book.findOne({ _id: req.params.id, seller: req.user.id });
@@ -121,7 +109,6 @@ router.put("/seller/:id", verifySellerToken, async (req, res) => {
     }
 });
 
-// Delete seller's book
 router.delete("/seller/:id", verifySellerToken, async (req, res) => {
     try {
         const book = await Book.findOneAndDelete({ 
@@ -137,11 +124,8 @@ router.delete("/seller/:id", verifySellerToken, async (req, res) => {
     }
 });
 
-// Create book route with error handling
 router.post("/create-book", async (req, res, next) => {
     try {
-        // Temporary bypass token verification for testing
-        // await verifyAdminToken(req, res, next);
         await postABook(req, res);
     } catch (error) {
         console.error("Route error:", error);
@@ -152,18 +136,14 @@ router.post("/create-book", async (req, res, next) => {
     }
 });
 
-// get all books
 router.get("/", getAllBooks);
 
-// single book endpoint
 router.get("/:id", getSingleBook);
 
-// update a book endpoint
 router.put("/edit/:id", verifyAdminToken, UpdateBook);
 
 router.delete("/:id", verifyAdminToken, deleteABook);
 
-// Add route to update book stats after sale
 router.post("/seller/:id/sale", verifySellerToken, async (req, res) => {
     try {
         const { quantity, revenue, rating } = req.body;

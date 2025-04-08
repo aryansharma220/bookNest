@@ -14,7 +14,6 @@ router.post("/admin", async (req, res) => {
             return res.status(404).json({message: "Admin not found!"});
         }
         
-        // Direct password comparison since we're not using hashed passwords
         if(admin.password !== password) {
             return res.status(401).json({message: "Invalid password!"});
         }

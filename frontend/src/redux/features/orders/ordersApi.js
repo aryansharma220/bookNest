@@ -10,15 +10,16 @@ const ordersApi = createApi({
     }),
     tagTypes: ['Orders'],
     endpoints: (builder) => ({
-        createOrder: (builder.mutation) ({
+        createOrder: builder.mutation({
             query: (newOrder) => ({
                 url: "/",
                 method: "POST",
                 body: newOrder,
                 credentials: 'include',
-            })
+            }),
+            invalidatesTags: ['Orders']
         }),
-        getOrderByEmail: (builder.query) ({
+        getOrderByEmail: builder.query({
             query: (email) => ({
                 url: `/email/${email}`
             }),
@@ -26,7 +27,7 @@ const ordersApi = createApi({
         }),
         cancelOrder: builder.mutation({
             query: (orderId) => ({
-                url: `/orders/${orderId}/cancel`,
+                url: `/${orderId}/cancel`,
                 method: 'PATCH',
             }),
             invalidatesTags: ['Orders'],

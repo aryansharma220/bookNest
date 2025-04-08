@@ -6,7 +6,6 @@ const postABook = async (req, res) => {
         
         const { title, description, category, coverImage, oldPrice, newPrice } = req.body;
 
-        // Validate all required fields
         const requiredFields = { title, description, category, coverImage, oldPrice, newPrice };
         const missingFields = Object.entries(requiredFields)
             .filter(([_, value]) => !value)
@@ -19,7 +18,6 @@ const postABook = async (req, res) => {
             });
         }
 
-        // Validate prices are numbers and positive
         if (isNaN(oldPrice) || isNaN(newPrice) || oldPrice < 0 || newPrice < 0) {
             return res.status(400).json({
                 message: "Prices must be valid positive numbers",
@@ -60,7 +58,6 @@ const postABook = async (req, res) => {
     }
 }
 
-// get all books
 const getAllBooks =  async (req, res) => {
     try {
         const books = await Book.find().sort({ createdAt: -1});
@@ -88,7 +85,6 @@ const getSingleBook = async (req, res) => {
 
 }
 
-// update book data
 const UpdateBook = async (req, res) => {
     try {
         const {id} = req.params;

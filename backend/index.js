@@ -8,21 +8,18 @@ const mongoose = require("mongoose");
 const port = process.env.PORT || 5000;
 require('dotenv').config()
 
-// middleware
 app.use(express.json());
 app.use(cors({
-    origin: true, // Allow all origins in development
+    origin: true,
     credentials: true
 }));
-app.use(express.static('public')); // Serve static files
+app.use(express.static('public'));
 
-// Ensure upload directory exists
 const uploadDir = path.join(__dirname, 'public/uploads');
 if (!fs.existsSync(uploadDir)){
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// routes
 const bookRoutes = require('./src/books/book.route');
 const orderRoutes = require("./src/orders/order.route")
 const userRoutes =  require("./src/users/user.route")

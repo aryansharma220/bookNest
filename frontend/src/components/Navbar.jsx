@@ -49,7 +49,6 @@ const Navbar = () => {
                             <HiMiniBars3CenterLeft className="w-7 h-7" />
                         </Link>
 
-                        {/* Main Navigation Links */}
                         <div className="hidden md:flex items-center gap-6">
                             {mainNavigation.map((item) => (
                                 <Link
@@ -63,7 +62,6 @@ const Navbar = () => {
                         </div>
                     </div>
 
-                    {/* Right side */}
                     <div className="flex items-center gap-6">
                         <div className="relative">
                             {
@@ -71,7 +69,6 @@ const Navbar = () => {
                                 <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className="flex items-center">
                                     <img src={avatarImg} alt="user" className={`size-7 rounded-full ${currentUser ? 'ring-2 ring-blue-500' : ''}`} />
                                 </button>
-                                {/* show dropdowns */}
                                 {
                                     isDropdownOpen && (
                                         <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md z-50">
@@ -105,7 +102,6 @@ const Navbar = () => {
                             className="hidden sm:flex items-center gap-2 hover:text-accent transition-colors relative group"
                         >
                             <HiOutlineHeart className="w-6 h-6" />
-                            {/* <span className="text-sm font-medium">Wishlist</span> */}
                             {wishlistItems.length > 0 && (
                                 <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                                     {wishlistItems.length}

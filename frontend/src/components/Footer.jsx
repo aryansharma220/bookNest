@@ -18,21 +18,6 @@ const Footer = () => {
             <li><Link to="/contact" className="text-sm hover:text-blue-600 transition-colors">Contact</Link></li>
           </ul>
 
-          {/* Social Links */}
-          <div className="flex items-center gap-4">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" 
-              className="text-gray-400 hover:text-blue-600 transition-all duration-300">
-              <FaFacebook size={18} />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" 
-              className="text-gray-400 hover:text-blue-400 transition-all duration-300">
-              <FaTwitter size={18} />
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" 
-              className="text-gray-400 hover:text-pink-600 transition-all duration-300">
-              <FaInstagram size={18} />
-            </a>
-          </div>
         </div>
       </div>
     </footer>

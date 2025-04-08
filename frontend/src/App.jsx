@@ -17,7 +17,6 @@ function App() {
       setLoading(false);
     }, 2000); 
 
-    // Cleanup timer
     return () => clearTimeout(timer);
   }, []);
 

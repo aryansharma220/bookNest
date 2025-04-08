@@ -2,7 +2,6 @@ const express = require('express');
 const Wishlist = require('./wishlist.model');
 const router = express.Router();
 
-// Get user's wishlist
 router.get('/:userId', async (req, res) => {
   try {
     const wishlist = await Wishlist.find({ userId: req.params.userId }).populate('bookId');
@@ -12,7 +11,6 @@ router.get('/:userId', async (req, res) => {
   }
 });
 
-// Add to wishlist
 router.post('/', async (req, res) => {
   try {
     const { userId, bookId } = req.body;
@@ -28,7 +26,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Remove from wishlist
 router.delete('/:userId/:bookId', async (req, res) => {
   try {
     await Wishlist.findOneAndDelete({ 

@@ -30,7 +30,6 @@ const CheckoutPage = () => {
 
     const [isChecked, setIsChecked] = useState(false)
 
-    // Validation patterns
     const phonePattern = /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/;
     const zipPattern = /^[0-9]{5}(?:-[0-9]{4})?$/;
 
@@ -65,7 +64,7 @@ const CheckoutPage = () => {
             };
 
             await createOrder(newOrder).unwrap();
-            dispatch(clearCart()); // Clear cart after successful order
+            dispatch(clearCart());
             
             Swal.fire({
                 icon: 'success',
@@ -86,7 +85,6 @@ const CheckoutPage = () => {
         }
     };
 
-    // Show empty cart message
     if (cartItems.length === 0) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -137,7 +135,6 @@ const CheckoutPage = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-2xl font-bold text-gray-800 mb-6">Shipping Information</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Form fields with validation */}
                         <div>
                             <label className="block text-gray-700 mb-2">Full Name</label>
                             <input
@@ -147,7 +144,6 @@ const CheckoutPage = () => {
                             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
                         </div>
 
-                        {/* Add similar validation for other fields */}
                         <div>
                             <label className="block text-gray-700 mb-2">Email Address</label>
                             <input
